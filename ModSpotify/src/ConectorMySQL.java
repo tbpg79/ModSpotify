@@ -4,7 +4,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.sql.Statement;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -14,7 +14,6 @@ import java.sql.SQLException;
  *
  * @author PC GAMING
  */
-
 public class ConectorMySQL {
 
     private Connection _conexion;
@@ -55,7 +54,7 @@ public class ConectorMySQL {
     }
 
     public void realizarConsulta(String consulta) throws SQLException {
-       
+
         conectar();
         PreparedStatement statement = null;
         ResultSet resultado = null;
@@ -88,6 +87,51 @@ public class ConectorMySQL {
         }
     }
 
+    public void inicializacionLimpia() throws SQLException {
+        conectar();
+
+        // Crear la base de datos si no existe
+        Statement statement = null;
+        try {
+            statement = _conexion.createStatement();
+            String createDatabaseSQL = "CREATE DATABASE IF NOT EXISTS spotifymod";
+            String deleteDatabaseSQL = "DROP DATABASE spotifymod";
+            statement.execute(deleteDatabaseSQL);
+            statement.execute(createDatabaseSQL);
+        } catch (SQLException ex) {
+            System.out.println("Error al crear la base de datos: " + ex.getMessage());
+            throw ex;
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+
+        // Seleccionar la base de datos recién creada
+        String useDatabaseSQL = "USE spotifymod";
+        statement = _conexion.createStatement();
+        statement.execute(useDatabaseSQL);
+
+        // Crear las tablas vacías
+        try {
+            String crearTablaSQL = "CREATE TABLE generosmusicales ("
+                    + "Genero varchar(20) DEFAULT NULL, "
+                    + "Titulo text DEFAULT NULL, "
+                    + "Informacion text DEFAULT NULL, "
+                    + "Cantantes varchar(50) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+            statement = _conexion.createStatement();
+            statement.execute(crearTablaSQL);
+        } catch (SQLException ex) {
+            System.out.println("Error en la instalación limpia (creación de tablas): " + ex.getMessage());
+            throw ex;
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        desconectar();
+    }
+
 // Agrega estas variables de instancia para almacenar los datos recuperados
     private String _titulo;
     private String _descripcion;
@@ -103,6 +147,10 @@ public class ConectorMySQL {
 
     public String getCantantes() {
         return _cantantes;
+    }
+
+    public Connection getConexion() {
+        return _conexion;
     }
 
 }
