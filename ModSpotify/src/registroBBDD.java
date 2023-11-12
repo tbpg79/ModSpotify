@@ -173,70 +173,71 @@ public class registroBBDD extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String genero = generoTextField.getText();
-        String titulo = tituloTextField.getText();
-        String informacion = infoTextField.getText();
-        String cantantes = cantantesTextField.getText();
+    String genero = generoTextField.getText();
+    String titulo = tituloTextField.getText();
+    String informacion = infoTextField.getText();
+    String cantantes = cantantesTextField.getText();
 
-        if (genero.trim().isEmpty() || titulo.trim().isEmpty() || informacion.trim().isEmpty() || cantantes.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            // Lista de géneros válidos declarada directamente
-            List<String> generosValidos = new ArrayList<>();
-            generosValidos.add("Rock");
-            generosValidos.add("Pódcast");
-            generosValidos.add("Novedades");
-            generosValidos.add("Pop");
-            generosValidos.add("Hip Hop");
-            generosValidos.add("Gaming");
-            generosValidos.add("Amor");
-            generosValidos.add("Jazz");
-            generosValidos.add("Relax");
-            generosValidos.add("Electrónica");
-            generosValidos.add("Para dormir");
-            generosValidos.add("Ejercicio");
-            generosValidos.add("Para estar en casa");
-            generosValidos.add("Salsa");
+    if (genero.trim().isEmpty() || titulo.trim().isEmpty() || informacion.trim().isEmpty() || cantantes.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
+    } else {
+        // Lista de géneros válidos declarada directamente
+        List<String> generosValidos = new ArrayList<>();
+        generosValidos.add("Rock");
+        generosValidos.add("Pódcast");
+        generosValidos.add("Novedades");
+        generosValidos.add("Pop");
+        generosValidos.add("Hip Hop");
+        generosValidos.add("Gaming");
+        generosValidos.add("Amor");
+        generosValidos.add("Jazz");
+        generosValidos.add("Relax");
+        generosValidos.add("Electrónica");
+        generosValidos.add("Para dormir");
+        generosValidos.add("Ejercicio");
+        generosValidos.add("Para estar en casa");
+        generosValidos.add("Salsa");
 
-            if (!generosValidos.contains(genero)) {
-                JOptionPane.showMessageDialog(this, "El género introducido no está en la lista de géneros válidos. El programa puede no funcionar como se espera.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                new Ventana().setVisible(true);
-                dispose();
-            } else {
-                try {
-                    ConectorMySQL conector = new ConectorMySQL("localhost", "spotifymod", "root", "");
-
-                    conector.conectar();
-
-                    // Insertar los datos en la base de datos
-                    String insertSQL = "INSERT INTO generosmusicales (Genero, Titulo, Informacion, Cantantes) VALUES (?, ?, ?, ?)";
-                    PreparedStatement preparedStatement = conector.getConexion().prepareStatement(insertSQL);
-                    preparedStatement.setString(1, genero);
-                    preparedStatement.setString(2, titulo);
-                    preparedStatement.setString(3, informacion);
-                    preparedStatement.setString(4, cantantes);
-
-                    int filasAfectadas = preparedStatement.executeUpdate();
-                    if (filasAfectadas > 0) {
-                        JOptionPane.showMessageDialog(this, "Datos insertados correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Error al insertar los datos.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-
-                    // Limpia los campos después de enviar
-                    generoTextField.setText("");
-                    tituloTextField.setText("");
-                    infoTextField.setText("");
-                    cantantesTextField.setText("");
-
-                    conector.desconectar();
-                    new Ventana().setVisible(true);
-                    dispose();
-                } catch (SQLException ex) {
-                    System.out.println("Error en la inserción de datos: " + ex.getMessage());
-                }
+        if (!generosValidos.contains(genero)) {
+            int option = JOptionPane.showConfirmDialog(this, "El género introducido no está en la lista de géneros válidos. ¿Deseas continuar?", "Advertencia", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if (option == JOptionPane.NO_OPTION) {
+                return;
             }
         }
+
+        try {
+            ConectorMySQL conector = new ConectorMySQL("localhost", "spotifymod", "root", "");
+
+            conector.conectar();
+
+            // Insertar los datos en la base de datos
+            String insertSQL = "INSERT INTO generosmusicales (Genero, Titulo, Informacion, Cantantes) VALUES (?, ?, ?, ?)";
+            PreparedStatement preparedStatement = conector.getConexion().prepareStatement(insertSQL);
+            preparedStatement.setString(1, genero);
+            preparedStatement.setString(2, titulo);
+            preparedStatement.setString(3, informacion);
+            preparedStatement.setString(4, cantantes);
+
+            int filasAfectadas = preparedStatement.executeUpdate();
+            if (filasAfectadas > 0) {
+                JOptionPane.showMessageDialog(this, "Datos insertados correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al insertar los datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            // Limpia los campos después de enviar
+            generoTextField.setText("");
+            tituloTextField.setText("");
+            infoTextField.setText("");
+            cantantesTextField.setText("");
+
+            conector.desconectar();
+            new Ventana().setVisible(true);
+            dispose();
+        } catch (SQLException ex) {
+            System.out.println("Error en la inserción de datos: " + ex.getMessage());
+        }
+    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

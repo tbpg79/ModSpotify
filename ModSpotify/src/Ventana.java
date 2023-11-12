@@ -1,6 +1,8 @@
 
 import java.awt.Color;
 import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,9 +32,11 @@ public class Ventana extends javax.swing.JFrame {
      */
     ConectorMySQL datos = new ConectorMySQL("localhost", "spotifymod", "root", "");
     private List<String> generosValidos = Arrays.asList(
-            "Rock", "Pódcast", "Novedades", "Pop", "Hip Hop", "Gaming", "Amor", "Jazz", "Relax", "Electrónica",
+            "Rock", "Pódcast", "Novedades", "Pop", "Hip Hop", "Gaming", "Amor", "Jazz", "Relax", "Electrónica", "Anime",
             "Para dormir", "Ejercicio", "Para estar en casa", "Salsa"
     );
+    private int contadorErrores = 0;
+    private final int limiteErrores = 3;
 
     public Ventana() {
         initComponents();
@@ -51,7 +55,7 @@ public class Ventana extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jBotonInicio = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jbuscarBoton = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel4 = new javax.swing.JPanel();
@@ -61,7 +65,6 @@ public class Ventana extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jBotonUsuario = new javax.swing.JButton();
-        jBotonNotificacion = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jPanel7 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -107,14 +110,24 @@ public class Ventana extends javax.swing.JFrame {
         jBotonInicio.setBorder(null);
         jBotonInicio.setBorderPainted(false);
         jBotonInicio.setContentAreaFilled(false);
+        jBotonInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonInicioActionPerformed(evt);
+            }
+        });
 
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/buscar.png"))); // NOI18N
-        jButton3.setText("  Buscar");
-        jButton3.setBorder(null);
-        jButton3.setBorderPainted(false);
-        jButton3.setContentAreaFilled(false);
+        jbuscarBoton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jbuscarBoton.setForeground(new java.awt.Color(255, 255, 255));
+        jbuscarBoton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/buscar.png"))); // NOI18N
+        jbuscarBoton.setText("  Buscar");
+        jbuscarBoton.setBorder(null);
+        jbuscarBoton.setBorderPainted(false);
+        jbuscarBoton.setContentAreaFilled(false);
+        jbuscarBoton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbuscarBotonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -128,7 +141,7 @@ public class Ventana extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton3)
+                            .addComponent(jbuscarBoton)
                             .addComponent(jBotonInicio))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -140,7 +153,7 @@ public class Ventana extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jBotonInicio)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3)
+                .addComponent(jbuscarBoton)
                 .addContainerGap(41, Short.MAX_VALUE))
         );
 
@@ -224,15 +237,15 @@ public class Ventana extends javax.swing.JFrame {
         });
 
         jBotonUsuario.setBackground(new java.awt.Color(51, 51, 51));
-        jBotonUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/icons8-usuario-32.png"))); // NOI18N
+        jBotonUsuario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/configuracion-de-la-base-de-datos.png"))); // NOI18N
         jBotonUsuario.setBorder(null);
         jBotonUsuario.setBorderPainted(false);
         jBotonUsuario.setContentAreaFilled(false);
-
-        jBotonNotificacion.setBackground(new java.awt.Color(51, 51, 51));
-        jBotonNotificacion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/icons8-recordatorios-de-citas-32.png"))); // NOI18N
-        jBotonNotificacion.setBorder(null);
-        jBotonNotificacion.setBorderPainted(false);
+        jBotonUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonUsuarioActionPerformed(evt);
+            }
+        });
 
         jScrollPane3.setBackground(new java.awt.Color(51, 51, 51));
         jScrollPane3.setBorder(null);
@@ -455,8 +468,6 @@ public class Ventana extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jBotonNotificacion)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jBotonUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(24, 24, 24))))
         );
@@ -467,8 +478,7 @@ public class Ventana extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jBotonUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
                     .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jBotonNotificacion))
+                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 549, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(81, 81, 81))
@@ -558,6 +568,15 @@ public class Ventana extends javax.swing.JFrame {
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "No se encontró información de Pódcast.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
                 }
             } catch (SQLException ex) {
                 System.out.println("" + ex);
@@ -591,6 +610,16 @@ public class Ventana extends javax.swing.JFrame {
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "No se encontró información de Novedades.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
                 }
             } catch (SQLException ex) {
                 System.out.println("" + ex);
@@ -624,6 +653,16 @@ public class Ventana extends javax.swing.JFrame {
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(this, "No se encontró información de Rock.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
                 }
             } catch (SQLException ex) {
                 System.out.println("" + ex);
@@ -633,277 +672,517 @@ public class Ventana extends javax.swing.JFrame {
 
     private void jBotonPopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonPopActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Pop'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Pop";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Pop'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Pop.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonPopActionPerformed
 
     private void jBotonHipHopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonHipHopActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Hip Hop'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "HIp Hop";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Hip Hop'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Hip Hop.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonHipHopActionPerformed
 
     private void jBotonGamingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonGamingActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Gaming'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Gaming";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Gaming'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Gaming.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonGamingActionPerformed
 
     private void jBotonAmorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonAmorActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Amor'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Amor";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Amor'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Amor.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonAmorActionPerformed
 
     private void jBotonJazzActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonJazzActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Jazz'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Jazz";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Jazz'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Jazz.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonJazzActionPerformed
 
     private void jBotonRelaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonRelaxActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Relax'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Relax";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Relax'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Relax.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonRelaxActionPerformed
 
     private void jBotonElectronicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonElectronicaActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Electrónica'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Electrónica";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Electrónica'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Electrónica.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonElectronicaActionPerformed
 
     private void jBotonDormirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonDormirActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Para dormir'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Para dormir";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Para dormir'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Para dormir.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonDormirActionPerformed
 
     private void jBotonEjercicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonEjercicioActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Ejercicio'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Ejercicio";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Ejercicio'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Ejercicio.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonEjercicioActionPerformed
 
     private void jBotonAnimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonAnimeActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Anime'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Anime";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Anime'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Anime.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonAnimeActionPerformed
 
     private void jBotonEstarCasaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonEstarCasaActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Para estar en casa'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Para estar en casa";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Para estar en casa'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Para estar en casa.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas continuar?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonEstarCasaActionPerformed
 
     private void jBotonSalsaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonSalsaActionPerformed
         // TODO add your handling code here:
-        String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Salsa'";
-        try {
-            datos.realizarConsulta(consulta);
-            String titulo = datos.getTitulo();
-            String descripcion = datos.getDescripcion();
-            String cantantes = datos.getCantantes();
-            // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
-            ArrayList<String> elementos = new ArrayList<>();
-            String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
-            for (String cantante : cantantesArray) {
-                elementos.add(cantante);
+        String genero = "Salsa";
+        if (!generosValidos.contains(genero)) {
+            // Muestra un JOptionPane de acceso denegado
+            JOptionPane.showMessageDialog(this, "Tienes que actualizar a un género válido para poder continuar.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String consulta = "SELECT * FROM generosmusicales WHERE Genero = 'Salsa'";
+            try {
+                datos.realizarConsulta(consulta);
+                String titulo = datos.getTitulo();
+                String descripcion = datos.getDescripcion();
+                String cantantes = datos.getCantantes();
+                // Recupera los cantantes de la base de datos y agrégalos a un ArrayList
+                ArrayList<String> elementos = new ArrayList<>();
+                if (cantantes != null) {
+                    String[] cantantesArray = cantantes.split(", "); // Supongo que los cantantes están separados por comas y espacio
+                    for (String cantante : cantantesArray) {
+                        elementos.add(cantante);
+                    }
+                    jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
+                    jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
+                    jGeneroInfo2Instance.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontró información de Salsa.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                    contadorErrores++;
+
+                    if (contadorErrores >= limiteErrores) {
+                        int opcion = JOptionPane.showConfirmDialog(this, "Te recomendamos modificar los datos. ¿Deseas hacerlo?", "Recomendación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                        if (opcion == JOptionPane.YES_OPTION) {
+                            new registroActualizable().setVisible(true);
+                            dispose();
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                System.out.println("" + ex);
             }
-            jGeneroInfo2 jGeneroInfo2Instance = new jGeneroInfo2();
-            jGeneroInfo2Instance.actualizarDatos(titulo, descripcion, cantantes, elementos);
-            jGeneroInfo2Instance.setVisible(true);
-            dispose();
-        } catch (SQLException ex) {
-            System.out.println("" + ex);
         }
     }//GEN-LAST:event_jBotonSalsaActionPerformed
 
@@ -914,6 +1193,58 @@ public class Ventana extends javax.swing.JFrame {
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jBotonUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonUsuarioActionPerformed
+        // TODO add your handling code here:
+        new registroActualizable().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jBotonUsuarioActionPerformed
+
+    private void jBotonInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonInicioActionPerformed
+        // TODO add your handling code here:
+        new Principal().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jBotonInicioActionPerformed
+
+    private void jbuscarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbuscarBotonActionPerformed
+        // TODO add your handling code here:
+        // Solicita el término de búsqueda al usuario
+        String terminoBusqueda = JOptionPane.showInputDialog(this, "Ingrese el término de búsqueda:", "Búsqueda", JOptionPane.QUESTION_MESSAGE);
+        if (terminoBusqueda != null && !terminoBusqueda.isEmpty()) {
+            try {
+                ConectorMySQL conector = new ConectorMySQL("localhost", "spotifymod", "root", "");
+                conector.conectar();
+
+                // Consulta SQL para buscar registros que coincidan con el término de búsqueda
+                String consulta = "SELECT * FROM generosmusicales WHERE Genero LIKE ? OR Titulo LIKE ? OR Cantantes LIKE ?";
+                PreparedStatement preparedStatement = conector.getConexion().prepareStatement(consulta);
+                preparedStatement.setString(1, "%" + terminoBusqueda + "%");
+                preparedStatement.setString(2, "%" + terminoBusqueda + "%");
+                preparedStatement.setString(3, "%" + terminoBusqueda + "%");
+
+                ResultSet resultado = preparedStatement.executeQuery();
+
+                StringBuilder resultados = new StringBuilder();
+                while (resultado.next()) {
+                    String genero = resultado.getString("Genero");
+                    String titulo = resultado.getString("Titulo");
+                    String cantantes = resultado.getString("Cantantes");
+
+                    resultados.append("Género: ").append(genero).append("\n");
+                    resultados.append("Título: ").append(titulo).append("\n");
+                    resultados.append("Cantantes: ").append(cantantes).append("\n\n");
+                }
+                if (resultados.length() > 0) {
+                    JOptionPane.showMessageDialog(this, "Resultados de la búsqueda:\n" + resultados.toString(), "Resultados", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontraron resultados para el término de búsqueda.", "Sin Resultados", JOptionPane.INFORMATION_MESSAGE);
+                }
+                conector.desconectar();
+            } catch (SQLException ex) {
+                System.out.println("Error en la búsqueda: " + ex.getMessage());
+            }
+        }
+    }//GEN-LAST:event_jbuscarBotonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -970,7 +1301,6 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JButton jBotonHipHop;
     private javax.swing.JButton jBotonInicio;
     private javax.swing.JButton jBotonJazz;
-    private javax.swing.JButton jBotonNotificacion;
     private javax.swing.JButton jBotonNovedades;
     private javax.swing.JButton jBotonPodcast;
     private javax.swing.JButton jBotonPop;
@@ -979,7 +1309,6 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JButton jBotonSalsa;
     private javax.swing.JButton jBotonUsuario;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
@@ -995,5 +1324,6 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JButton jbuscarBoton;
     // End of variables declaration//GEN-END:variables
 }
