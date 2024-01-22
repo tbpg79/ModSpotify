@@ -4,6 +4,10 @@
  "http://java.sun.com/products/javahelp/map_2_0.dtd">
  <map version="1.0">
      <mapID target="aplicacion" url="html/main.html" />
-     <mapID target="ventana_principal" url="html/pagina1.html" />
-     <mapID target="ventana_secundaria" url="html/pagina2.html" />
+     <mapID target="buscar" url="html/pagina1.html" />
+     <mapID target="reproduccion" url="html/pagina2.html" />
+    <mapID target="actualizar" url="html/pagina3.html" />
+    <mapID target="modificar" url="html/pagina4.html" />
+    <mapID target="insertar" url="html/pagina5.html" />
+
  </map>

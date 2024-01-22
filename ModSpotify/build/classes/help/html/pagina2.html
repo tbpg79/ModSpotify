@@ -3,13 +3,60 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>pagina 2</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <h5>AyudaaaAAAAA</h5>
-    </body>
+<head>
+    <title>Ayuda de Reproducción de Canciones</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px ;
+            background-color: #8aff8a;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 5px;
+            border: 1px solid #ddd;
+        }
+        img {
+                max-width: 100%;
+                height: auto;
+                margin-top: 20px;
+            }
+    </style>
+</head>
+<body>
+    <h1>Ayuda de Reproducción de Canciones</h1>
+        <img src="./reproduccionHelp.png" alt="imagen de reproduccion de cancion"/>
+
+    <h2>botonReproducirActionPerformed</h2>
+    <p>
+        Este método se ejecuta cuando se hace clic en el botón de reproducción/pausa. 
+        Si la reproducción está en curso, detiene la reproducción llamando a <code>detenerReproduccion()</code>, 
+        y luego crea una nueva instancia de <code>MP3Player</code> con la canción seleccionada.
+        Si no se está reproduciendo, inicia la reproducción llamando a <code>reproducirCancionSeleccionada()</code>.
+    </p>
+
+    <h2>reproducirCancionSeleccionada</h2>
+    <p>
+        Este método inicia la reproducción de la canción seleccionada. Si hay una canción seleccionada diferente a la actual,
+        detiene la reproducción actual llamando a <code>detenerReproduccion()</code>, 
+        crea una nueva instancia de <code>MP3Player</code> con la nueva canción y la reproduce. 
+        Actualiza la canción actual y cambia el icono del botón de reproducción a pausa.
+    </p>
+
+    <h2>detenerReproduccion</h2>
+    <p>
+        Este método detiene la reproducción si hay una instancia de <code>MP3Player</code> en curso. 
+        Marca que no se está reproduciendo, actualiza el icono del botón de reproducción a reproducir.
+    </p>
+</body>
 </html>
+

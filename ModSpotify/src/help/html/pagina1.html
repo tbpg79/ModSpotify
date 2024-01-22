@@ -3,13 +3,127 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
-<html>
+<!DOCTYPE html>
+<html lang="es">
     <head>
-        <title>pagina 1</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ayuda: jbuscarBotonActionPerformed</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #c3e6cb;
+            }
+
+            h1 {
+                color: #333;
+            }
+
+            p {
+                color: #555;
+            }
+
+            code {
+                background-color: #f4f4f4;
+                padding: 2px 4px;
+                border: 1px solid #ddd;
+                font-family: Consolas, "Courier New", monospace;
+            }
+
+            pre {
+                background-color: #f8f8f8;
+                padding: 10px;
+                border: 1px solid #ddd;
+                overflow-x: auto;
+            }
+            ol, li {
+                margin-bottom: 20px;
+            }
+            img {
+                max-width: 100%;
+                height: auto;
+                margin-top: 20px;
+            }
+        </style>
     </head>
     <body>
-        <div>TODO write content</div>
+
+        <h1>Ayuda: jbuscarBotonActionPerformed</h1>
+        <img src="./ayudaHelp.png" alt="alt"/>
+        <p>
+            Este método realiza una búsqueda en la base de datos utilizando un término proporcionado por el usuario.
+        </p>
+
+        <h2>Descripción</h2>
+        <p>
+            El método realiza los siguientes pasos:
+        </p>
+
+        <ol>
+            <li>Solicita al usuario un término de búsqueda mediante una ventana de entrada.</li>
+            <li>Conecta a una base de datos MySQL llamada "spotifymod" en el servidor local.</li>
+            <li>Ejecuta una consulta SQL que busca registros en la tabla "generosmusicales" que coincidan con el término de búsqueda en las columnas "Genero", "Titulo" o "Cantantes".</li>
+            <li>Itera sobre los resultados de la consulta y construye un mensaje con la información encontrada.</li>
+            <li>Muestra una ventana de mensaje con los resultados o informa si no se encontraron resultados.</li>
+            <li>Finalmente, desconecta de la base de datos.</li>
+        </ol>
+
+        <h2>Código</h2>
+        <pre>
+        <code>
+                private void jbuscarBotonActionPerformed(java.awt.event.ActionEvent evt) {                                             
+        // TODO add your handling code here:
+        // Solicita el término de búsqueda al usuario
+        String terminoBusqueda = JOptionPane.showInputDialog(this, "Ingrese el término de búsqueda:", "Búsqueda", JOptionPane.QUESTION_MESSAGE);
+        if (terminoBusqueda != null && !terminoBusqueda.isEmpty()) {
+            try {
+                ConectorMySQL conector = new ConectorMySQL("localhost", "spotifymod", "root", "");
+                conector.conectar();
+
+                // Consulta SQL para buscar registros que coincidan con el término de búsqueda
+                String consulta = "SELECT * FROM generosmusicales WHERE Genero LIKE ? OR Titulo LIKE ? OR Cantantes LIKE ?";
+                PreparedStatement preparedStatement = conector.getConexion().prepareStatement(consulta);
+                preparedStatement.setString(1, "%" + terminoBusqueda + "%");
+                preparedStatement.setString(2, "%" + terminoBusqueda + "%");
+                preparedStatement.setString(3, "%" + terminoBusqueda + "%");
+
+                ResultSet resultado = preparedStatement.executeQuery();
+
+                StringBuilder resultados = new StringBuilder();
+                while (resultado.next()) {
+                    String genero = resultado.getString("Genero");
+                    String titulo = resultado.getString("Titulo");
+                    String cantantes = resultado.getString("Cantantes");
+
+                    resultados.append("Género: ").append(genero).append("\n");
+                    resultados.append("Título: ").append(titulo).append("\n");
+                    resultados.append("Cantantes: ").append(cantantes).append("\n\n");
+                }
+                if (resultados.length() > 0) {
+                    JOptionPane.showMessageDialog(this, "Resultados de la búsqueda:\n" + resultados.toString(), "Resultados", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se encontraron resultados para el término de búsqueda.", "Sin Resultados", JOptionPane.INFORMATION_MESSAGE);
+                }
+                conector.desconectar();
+            } catch (SQLException ex) {
+                System.out.println("Error en la búsqueda: " + ex.getMessage());
+            }
+        }
+    }                           
+        </code>
+        </pre>
+
+        <h2>Parámetros</h2>
+        <p>
+            El método no toma parámetros adicionales aparte del evento <code>java.awt.event.ActionEvent</code>.
+        </p>
+
+        <h2>Excepciones</h2>
+        <p>
+            El método maneja las excepciones de <code>SQLException</code> imprimiendo un mensaje de error en la consola.
+        </p>
+
     </body>
 </html>
+

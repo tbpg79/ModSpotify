@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Modificar Boton</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #c3e6cb;
+            }
+
+            h1 {
+                color: #333;
+            }
+
+            p {
+                color: #555;
+            }
+
+            code {
+                background-color: #f4f4f4;
+                padding: 2px 4px;
+                border: 1px solid #ddd;
+                font-family: Consolas, "Courier New", monospace;
+            }
+
+
+         pre {
+                background-color: #f8f8f8;
+                padding: 10px;
+                border: 1px solid #ddd;
+                overflow-x: auto;
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Descripción del Código</h1>
+        <img src="./modificarBotonHelp.png" alt="modificar boton help"/>
+
+        <p>El siguiente código Java muestra un mensaje de confirmación antes de guardar cambios en una tabla de base de datos.</p>
+        <pre>
+        <code>
+           private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // TODO add your handling code here:
+        // Mostrar un mensaje de confirmación antes de guardar los cambios
+        int opcion = JOptionPane.showConfirmDialog(this, "Este proceso es crítico y sobrescribirá los datos actuales. ¿Desea guardar los cambios?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            tablaBBDD.getModel().addTableModelListener(new TableModelListener() {
+                @Override
+                public void tableChanged(TableModelEvent e) {
+                    int fila = e.getFirstRow();
+                    int columna = e.getColumn();
+                    DefaultTableModel modeloTabla = (DefaultTableModel) tablaBBDD.getModel();
+
+                    if (fila >= 0 && columna >= 0) {
+                        Object valorCelda = modeloTabla.getValueAt(fila, columna);
+                        String genero = (String) modeloTabla.getValueAt(fila, 0); // Suponiendo que la primera columna es el género
+
+                        if (valorCelda != null) {
+                            // Realiza la actualización en la base de datos
+                            actualizarBaseDeDatos(genero, columna, valorCelda.toString());
+                        }
+                    }
+                }
+            });
+        }
+    }
+        </code>
+</pre>
+        <p>Este método muestra un cuadro de diálogo de confirmación y, si se elige "Sí", registra cambios realizados en una tabla de base de datos.</p>
+
+    </body>
+</html>
+

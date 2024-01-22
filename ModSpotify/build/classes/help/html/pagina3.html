@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Descripción de Código</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #c3e6cb;
+            }
+            h1 {
+                color: #333;
+            }
+
+            p {
+                color: #555;
+            }
+            code {
+                background-color: #f4f4f4;
+                padding: 2px 4px;
+                border: 1px solid #ddd;
+                font-family: Consolas, "Courier New", monospace;
+            }
+            pre {
+                background-color: #f8f8f8;
+                padding: 10px;
+                border: 1px solid #ddd;
+                overflow-x: auto;
+            }
+            img {
+                max-width: 100%;
+                height: auto;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Descripción del Código</h1>
+        <img src="./actualizarBotonHelp.png" alt="actualizar boton help"/>
+        <p>El siguiente código Java realiza la acción asociada al evento de hacer clic en un botón (jButton1).</p>
+        <pre>
+        <code>
+            private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+            DefaultTableModel modeloTabla = (DefaultTableModel) tablaBBDD.getModel();
+            modeloTabla.setRowCount(0); // Limpia la tabla si había datos previos
+
+            try {
+            ConectorMySQL conector = new ConectorMySQL("localhost", "spotifymod", "root", "");
+            conector.conectar();
+
+            String consulta = "SELECT * FROM generosmusicales";
+            PreparedStatement statement = conector.getConexion().prepareStatement(consulta);
+            ResultSet resultado = statement.executeQuery();
+
+            while (resultado.next()) {
+            String genero = resultado.getString("Genero");
+            String titulo = resultado.getString("Titulo");
+            String informacion = resultado.getString("Informacion");
+            String cantantes = resultado.getString("Cantantes");
+
+            modeloTabla.addRow(new Object[]{genero, titulo, informacion, cantantes});
+            }
+            conector.desconectar();
+            } catch (SQLException ex) {
+            System.out.println("Error en la consulta: " + ex.getMessage());
+            }
+            }
+        </code>
+</pre>
+        <p>Este método realiza una consulta a una base de datos MySQL, recupera los resultados y los muestra en una tabla.</p>
+
+        <h2>Parámetros:</h2>
+        <p>No hay parámetros explícitos para este método.</p>
+
+        <h2>Excepciones:</h2>
+        <p>SQLException: Maneja cualquier excepción que pueda ocurrir durante la ejecución de la consulta a la base de datos.</p>
+
+
+    </body>
+</html>
