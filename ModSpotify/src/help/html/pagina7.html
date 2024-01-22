@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargar informacion</title>
+    <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #c3e6cb;
+            }
+
+            h1 {
+                color: #333;
+            }
+
+            p {
+                color: #555;
+            }
+
+            code {
+                background-color: #f4f4f4;
+                padding: 2px 4px;
+                border: 1px solid #ddd;
+                font-family: Consolas, "Courier New", monospace;
+            }
+
+
+            pre {
+                background-color: #f8f8f8;
+                padding: 10px;
+                border: 1px solid #ddd;
+                overflow-x: auto;
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+                margin-top: 20px;
+            }
+    </style>
+</head>
+<body>
+    <h1>Descripción del Código</h1>
+        <img src="./principalHelp.png" alt="Informacion del boton principal de cargar informacion"/>
+
+    <p>El siguiente código Java responde al evento de hacer clic en el botón (<code>jButton1ActionPerformed</code>). Muestra un cuadro de diálogo de confirmación antes de realizar una inicialización limpia de la base de datos. Si la confirmación es afirmativa, ejecuta la inicialización limpia utilizando un objeto de la clase <code>ConectorMySQL</code>. Después de la inicialización limpia, crea una nueva conexión a la base de datos <code>spotifymod</code> y abre la ventana de registro de base de datos (<code>registroBBDD</code>), cerrando la ventana actual.</p>
+<pre>
+   
+    <code>
+        private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+            int confirmacion = JOptionPane.showConfirmDialog(
+                this,
+                "Este proceso es crítico y eliminará la base de datos actual. ¿Desea continuar?",
+                "Confirmación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                try {
+                    ConectorMySQL conectorInstalacionLimpia = new ConectorMySQL("localhost", "", "root", "");
+                    // Ejecuta inicialización limpia
+                    conectorInstalacionLimpia.inicializacionLimpia();
+                    // Después de la instalación limpia, crea una nueva conexión a la base de datos spotifymod
+                    ConectorMySQL conector = new ConectorMySQL("localhost", "spotifymod", "root", "");
+                    new registroBBDD().setVisible(true);
+                    dispose();
+                } catch (SQLException ex) {
+                    System.err.println("Error en la inicialización limpia: " + ex.getMessage());
+                }
+            }
+        }
+    </code>
+    </pre>
+
+
+</body>
+</html>

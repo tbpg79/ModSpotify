@@ -1,12 +1,14 @@
- <?xml version="1.0" encoding="ISO-8859-1"?>
- <toc version="1.0">
- <tocitem text="Ejemplo JavaHelp" target="aplicacion">
-     <tocitem text="Buscar" target="buscar"/>
-     <tocitem text="Reproduccion" target="reproduccion"/>
-          <tocitem text="Actualizar" target="actualizar"/>
-                    <tocitem text="Modificar" target="modificar"/>
-                                        <tocitem text="Insertar" target="insertar"/>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<toc version="1.0">
+    <tocitem text="Ejemplo JavaHelp" target="aplicacion">
+        <tocitem text="Buscar" target="buscar"/>
+        <tocitem text="Reproduccion" target="reproduccion"/>
+        <tocitem text="Actualizar" target="actualizar"/>
+        <tocitem text="Modificar" target="modificar"/>
+        <tocitem text="Insertar" target="insertar"/>
+        <tocitem text="GeneroInfo" target="generoInfo"/>
+        <tocitem text="Principal" target="principal"/>
 
 
- </tocitem>
- </toc>
+    </tocitem>
+</toc>

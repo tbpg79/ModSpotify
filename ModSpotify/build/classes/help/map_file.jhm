@@ -9,5 +9,7 @@
     <mapID target="actualizar" url="html/pagina3.html" />
     <mapID target="modificar" url="html/pagina4.html" />
     <mapID target="insertar" url="html/pagina5.html" />
+    <mapID target="generoInfo" url="html/pagina6.html" />
+    <mapID target="principal" url="html/pagina7.html" />
 
  </map>
